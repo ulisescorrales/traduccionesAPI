@@ -44,17 +44,18 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // });
 
 app.get('/api/:word', (req: Request, res: Response) => {
-    connection.query('SELECT * FROM words', (err: any, rows: any) => {
+    let word=req.params.word;
+    connection.query('SELECT word,translation FROM words w where w.word='+ connection.escape(word), (err: any, result:any) => {
         if (err) {
-            req.params.word;
             console.log(err);
+            res.status(404).send("Palabra no encontrada")
         } else {
-            res.send(rows);
+            res.status(200).send(result);
         }
     });
 });
 
 app.listen(port, () => {
-    console.log(`Server started on port ${port}`);
+    console.log('Server started on port ${port}');
 }
 );
