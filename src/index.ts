@@ -2,8 +2,8 @@
 //import { createServer } from 'http';
 // const http = require('http');
 import { Request, Response } from 'express';	
-import { Connection } from 'mysql';
-const mysql = require('mysql');
+import { Connection } from 'mysql2';
+const mysql = require('mysql2');
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
@@ -14,7 +14,7 @@ const port = 3000;
 const connection:Connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: '1234',
+    password: 'foxy@lleN',
     database: 'playWords',
     port: 3306
 });
@@ -31,21 +31,9 @@ app.use(cors({ origin: 'http://localhost:4200' }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// const server: Server = http.createServer((req: ClientRequest, res: ServerResponse) => {
-//     res.writeHead(200, { 'Content-Type': 'text/plain' });
-//     res.end('Hello World!\n');
-// });
-
-
-
-// starts a simple http server locally on port 3000
-// server.listen(port, '127.0.0.1', () => {
-//     console.log('Listening on 127.0.0.1:3000');
-// });
-
 app.get('/api/:word', (req: Request, res: Response) => {
     let word=req.params.word;
-    connection.query('SELECT word,translation FROM words w where w.word='+ connection.escape(word), (err: any, result:any) => {
+    connection.query('SELECT lexentry,translate,sense FROM translation_en_es w where w.word='+ connection.escape(word), (err: any, result:any) => {
         if (err) {
             console.log(err);
             res.status(404).send("Palabra no encontrada")
@@ -56,6 +44,6 @@ app.get('/api/:word', (req: Request, res: Response) => {
 });
 
 app.listen(port, () => {
-    console.log('Server started on port ${port}');
+    console.log('Server started on port '+port);
 }
 );

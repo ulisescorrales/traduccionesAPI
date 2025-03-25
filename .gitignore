@@ -1,3 +1,6 @@
+tags.temp
+tags.lock
+tags
 node_modules
 dist
 utils
