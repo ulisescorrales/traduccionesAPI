@@ -1,8 +1,5 @@
-// server.mjs
-//import { createServer } from 'http';
-// const http = require('http');
 import { Request, Response } from 'express';	
-import { Connection } from 'mysql2';
+import { Connection, Pool, RowDataPacket} from 'mysql2';
 const mysql = require('mysql2');
 const express = require('express');
 const app = express();
@@ -10,21 +7,15 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const port = 3000;
 
-
-const connection:Connection = mysql.createConnection({
+const pool:Pool=mysql.createPool({
     host: 'localhost',
     user: 'root',
-    password: 'foxy@lleN',
+    password: '1234',
     database: 'playWords',
-    port: 3306
-});
-
-connection.connect((err: any) => {
-    if (err) {
-        console.log(err);
-    } else {
-        console.log('Connected to the database');
-    }
+    port: 3306,
+	waitForConnections:true,
+	connectionLimit:10,
+	queueLimit:0
 });
 
 app.use(cors({ origin: 'http://localhost:4200' }));
@@ -33,13 +24,15 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get('/api/:word', (req: Request, res: Response) => {
     let word=req.params.word;
-    connection.query('SELECT lexentry,translate,sense FROM translation_en_es w where w.word='+ connection.escape(word), (err: any, result:any) => {
+    pool.query<RowDataPacket[]>('SELECT lexentry,translate,sense FROM translation_en_es w where w.word= ?',word, (err: any, result) => {
         if (err) {
             console.log(err);
-            res.status(404).send("Palabra no encontrada")
-        } else {
+            res.status(500).send("Error del servidor")
+        } else if(result.length==0){
+			res.status(404).send("No existe palabra");
+		}else{
             res.status(200).send(result);
-        }
+		}
     });
 });
 
