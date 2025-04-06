@@ -3,7 +3,7 @@ export interface Word{
     lexentry: string;
     translate: string;
     sense: string;
-    examples:string[];
+    examples:string;
     synonyms:string[];
     antonyms:string[];
 }
