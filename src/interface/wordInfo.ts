@@ -1,5 +1,4 @@
-export interface Word{
-    word:string,
+export interface WordInfo{
     lexentry: string;
     translate: string;
     sense: string;

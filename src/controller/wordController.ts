@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
 import { Router } from 'express';
-import { deleteWordService, queryWord, saveWord } from '../service/wordService';
-import { Word } from '../interface/word';
+import { deleteWordInfoInfoService, queryWordInfoInfo, saveWordInfoInfo } from '../service/wordService';
+import { WordInfoInfo } from '../interface/wordInfo';
 import jwt from 'jsonwebtoken';
-const routerWord:Router = Router()
+const routerWordInfoInfo:Router = Router()
 import dotEnv  from 'dotenv'
 dotEnv.config();
 // const token=jwt.sign({foo:'bar'},"secret",{expiresIn:"1h"});
@@ -24,9 +24,9 @@ function createJWT(req:Request,res:Response,next:any){
 	
 }
 
-routerWord.get('/words/:word',verifyJWT,(req: Request, res: Response) => {
+routerWordInfoInfo.get('/words/:word',(req: Request, res: Response) => {
     let word = req.params.word;
-    queryWord(word).then((result: Word[]) => {
+    queryWordInfoInfo(word).then((result: WordInfoInfo[]) => {
         if (result.length == 0) {
             res.status(404).send("No se encontraron resultados");
         } else {
@@ -39,18 +39,17 @@ routerWord.get('/words/:word',verifyJWT,(req: Request, res: Response) => {
 });
 
 
-routerWord.post('/words',verifyJWT ,(req: Request, res: Response) => {
-routerWord.delete('/words/:idWord', (req: Request, res: Response) => {
+routerWordInfoInfo.delete('/words/:idWordInfoInfo', (req: Request, res: Response) => {
     //Delete a word from the database
-    let idWord = req.params.word;
-    if (!/^\d+$/.test(idWord)){
+    let idWordInfoInfo = req.params.word;
+    if (!/^\d+$/.test(idWordInfoInfo)){
         res.status(400).send("Invalid word id");
     }else{
-        deleteWordService(idWord).then((result: boolean) => {
+        deleteWordInfoInfoService(idWordInfoInfo).then((result: boolean) => {
             if (result) {
-                res.status(200).send("Word deleted successfully");
+                res.status(200).send("WordInfoInfo deleted successfully");
             } else {
-                res.status(400).send("Word not found");
+                res.status(400).send("WordInfoInfo not found");
             }
         }).catch((err: any) => {
             res.status(500).send("Error accessing the database");
@@ -58,19 +57,19 @@ routerWord.delete('/words/:idWord', (req: Request, res: Response) => {
 
     }
 });
-routerWord.post('/words', (req: Request, res: Response) => {
+routerWordInfoInfo.post('/words', (req: Request, res: Response) => {
     //Receives a unique word to register
-    let word: Word = req.body;
+    let word: WordInfoInfo = req.body;
     //Check if the word is empty
     if (!word.word || !word.lexentry || !word.translate || !word.sense) {
         res.status(400).send("Missing data to register the word.");
     }
     
-    saveWord(word).then((result: boolean) => {
+    saveWordInfoInfo(word).then((result: boolean) => {
         if (result) {
-            res.status(200).send("Word registered successfully");
+            res.status(200).send("WordInfoInfo registered successfully");
         } else {
-            res.status(400).send("Word already registered");
+            res.status(400).send("WordInfoInfo already registered");
         }
     }).catch((err: any) => {
         res.status(500).send("Error accessing the database");
@@ -80,4 +79,4 @@ routerWord.post('/words', (req: Request, res: Response) => {
     
 });
 
-export default routerWord;
+export default routerWordInfoInfo;
