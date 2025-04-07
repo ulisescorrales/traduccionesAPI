@@ -2,6 +2,10 @@ import { deleteWordRepository, queryWordRepository, saveWordRepository } from '.
 import { Word } from '../interface/word';
 
 export function queryWord(word: string): Promise<Word[]> {
+    if(word.endsWith("s")){
+        word = word.substring(0, word.length - 1);
+        console.log(word);
+    }
     return new Promise<Word[]>((resolve, reject) =>
         queryWordRepository(word).then((result: Word[]) => {
             resolve(result);

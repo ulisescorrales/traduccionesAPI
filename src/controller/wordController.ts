@@ -2,13 +2,29 @@ import { Request, Response } from 'express';
 import { Router } from 'express';
 import { deleteWordService, queryWord, saveWord } from '../service/wordService';
 import { Word } from '../interface/word';
+import jwt from 'jsonwebtoken';
+const routerWord:Router = Router()
+import dotEnv  from 'dotenv'
+dotEnv.config();
+// const token=jwt.sign({foo:'bar'},"secret",{expiresIn:"1h"});
 
-const routerWord = Router();
-function unaFuncion(req: Request, res: Response, next: any) {
-    console.log("Middleware executed");
-    next();
+function verifyJWT(req:Request,res:Response,next:any){
+	if(req.body.jwt){
+		try{
+			jwt.verify(req.body.jwt,process.env.JWT_SECRET as string)
+			next();
+		}catch(err){
+			res.status(401).send("401 Unauthorized")
+		}
+	}else{
+		res.status(401).send("401 Unauthorized")
+	}
 }
-routerWord.get('/words/:word',unaFuncion ,(req: Request, res: Response) => {
+function createJWT(req:Request,res:Response,next:any){
+	
+}
+
+routerWord.get('/words/:word',verifyJWT,(req: Request, res: Response) => {
     let word = req.params.word;
     queryWord(word).then((result: Word[]) => {
         if (result.length == 0) {
@@ -17,9 +33,13 @@ routerWord.get('/words/:word',unaFuncion ,(req: Request, res: Response) => {
             res.status(200).send(result);
         }
     }).catch((err: any) => {
+		console.log(err);
         res.status(500).send("Error del servidor");
     });
 });
+
+
+routerWord.post('/words',verifyJWT ,(req: Request, res: Response) => {
 routerWord.delete('/words/:idWord', (req: Request, res: Response) => {
     //Delete a word from the database
     let idWord = req.params.word;
