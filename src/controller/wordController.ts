@@ -4,7 +4,11 @@ import { deleteWordService, queryWord, saveWord } from '../service/wordService';
 import { Word } from '../interface/word';
 
 const routerWord = Router();
-routerWord.get('/words/:word', (req: Request, res: Response) => {
+function unaFuncion(req: Request, res: Response, next: any) {
+    console.log("Middleware executed");
+    next();
+}
+routerWord.get('/words/:word',unaFuncion ,(req: Request, res: Response) => {
     let word = req.params.word;
     queryWord(word).then((result: Word[]) => {
         if (result.length == 0) {
