@@ -1,3 +1,5 @@
+version
+.env
 tags.temp
 tags.lock
 tags
