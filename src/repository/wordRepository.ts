@@ -1,14 +1,8 @@
-# 0 "../backup/wordRepository.ts"
-# 0 "<built-in>"
-# 0 "<command-line>"
-# 1 "/usr/include/stdc-predef.h" 1 3 4
-# 0 "<command-line>" 2
-# 1 "../backup/wordRepository.ts"
 import mysql, { Pool, RowDataPacket } from 'mysql2';
 import { Word } from '../interface/word';
 
 const pool:Pool=mysql.createPool({
-    host: 'localhost',
+    host: 'mysql',
     user: 'root',
     password: '1234',
     database: 'traducciones',
