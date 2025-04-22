@@ -46,7 +46,7 @@ def consultar_y_dividir(conexion, consulta):
         res1=[] #Resultado thread1
         res2=[] #Resultado thread2
         t1=threading.Thread(target=getInserts,args=(resultadoConsulta,0,mitad,res1))
-        t2=threading.Thread(target=getInserts,args=(resultadoConsulta,mitad+1,10000,res2))
+        t2=threading.Thread(target=getInserts,args=(resultadoConsulta,mitad+1,len(resultadoConsulta)-1,res2))
         t1.start()
         t2.start()
 
@@ -133,7 +133,8 @@ if __name__ == "__main__":
     sentencias+="UPDATE translation_en_es SET lexentry='Adverb' WHERE lexentry LIKE '%Adverb%';\n"
     sentencias+="UPDATE translation_en_es SET lexentry='Verb' WHERE lexentry LIKE '%Verb%' AND NOT lexentry='Adverb';\n" #Evitar que afecte a Adverb
     sentencias+="COMMIT;"
+    print("Finaliza la construccion de sentencias.sql")
     with open("./transformacionSQL/output/sentencias.sql","w",encoding="utf-8") as archivo:
         archivo.write(sentencias)
+        print("archivo guardado en transformacionSQL/output/sentencias.sql")
     conexion.close()
-    print("Finaliza la construccion de sentencias.sql")
