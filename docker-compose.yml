@@ -1,0 +1,40 @@
+services:
+  transformacion_sql:
+    build:
+      context: .
+      dockerfile: Dockerfile-python
+    volumes:
+      - ./dump:/app/transformacionSQL/output/
+      #    command: ["python", "app/transformacionSQL/scripts/extraerDatos.py"]
+    # Ejecutar solo una vez y terminar
+    restart: "no"
+
+  mysql:
+    image: mysql
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234 
+      MYSQL_DATABASE: traducciones
+    ports:
+      - "3310:3306"
+    volumes:
+      # dump se copiará aquí para que MySQL lo importe
+      - ./dump:/docker-entrypoint-initdb.d
+    depends_on:
+       transformacion_sql:
+         condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend-node:
+    build:
+      context: .
+      dockerfile: Dockerfile-node
+    depends_on:
+      mysql:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
