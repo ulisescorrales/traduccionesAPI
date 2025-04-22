@@ -1,3 +1,6 @@
+version
+dump
+.env
 tags.temp
 tags.lock
 tags
