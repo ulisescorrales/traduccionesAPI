@@ -13,7 +13,11 @@ routerWord.get('/:word', (req: Request, res: Response) => {
             res.status(200).send(result);
         }
     }).catch((err: any) => {
-        res.status(500).send("Error del servidor");
+		if(err.code === 'ECONNREFUSED'){
+        	res.status(500).send("La base de datos todavía está cargando datos");
+		}else{
+        	res.status(500).send("Error del servidor");
+		}
     });
 });
 export default routerWord;

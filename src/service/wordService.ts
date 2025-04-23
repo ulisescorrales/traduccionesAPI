@@ -6,6 +6,7 @@ export function queryWord(word: string): Promise<Word[]> {
         queryWordRepository(word).then((result: Word[]) => {
             resolve(result);
         }).catch((err: any) => {
+			console.log(err)
             reject("Error accediendo a la base de datos")
         })
     );

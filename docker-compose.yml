@@ -24,7 +24,7 @@ services:
        transformacion_sql:
          condition: service_completed_successfully
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "mysql", "-uroot", "-p1234"]
       interval: 5s
       timeout: 5s
       retries: 10
