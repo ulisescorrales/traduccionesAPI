@@ -10,7 +10,7 @@ services:
     restart: "no"
 
   mysql:
-    image: mysql
+    image: mysql:9.1.0
     container_name: mysql
     environment:
       MYSQL_ROOT_PASSWORD: 1234 
@@ -37,4 +37,4 @@ services:
       mysql:
         condition: service_healthy
     ports:
-      - "3000:3000"
+      - "3000:3000" #Para usar otro puerto, cambiar el primer número
